@@ -216,6 +216,10 @@ class Hate:
 
         train_aux, test_split, y_train_aux, y_test = train_test_split(list(data.keys()), list(data.values()), test_size = 0.1)
         train_split, val_split, y_train, y_val = train_test_split(train_aux, y_train_aux, test_size = 0.1)
+        print(len(train_split))
+        print(len(val_split))
+        print(len(test_split))
+        print(len(data))
 
         self.train = train = []
         self.dev = dev = []
@@ -227,11 +231,11 @@ class Hate:
             
             img = np.load(f'{path_dir}/features/I3D_vecs/' + dat + "_rgb.npy") + np.load(f'{path_dir}/features/I3D_vecs/' + dat + "_flow.npy")
             #image.append(img)
-            mask_img = mask_vector(36, img)
+            mask_img = mask_vector(26, img)
 
             aud = np.load(f'{path_dir}/features/vgg_vecs/' + dat + '_vggish.npy')
             #audio.append(aud)
-            mask_aud = mask_vector(63, aud)
+            mask_aud = mask_vector(67, aud)
             
             _words = []
             txt = open(f'{path_dir}/features/TextoFiles/{dat}.txt', 'r', encoding = 'utf8')
