@@ -1,9 +1,7 @@
 
 from data_loader import get_loader
 
-dataset = 'UR_FUNNY'
-batch_size = 16
-len0 = 8074 # MOSI: 1283 - MOSEI: 16327 - UR-FUNNY: 8074 - MUSTARD: 412
+batch_size = 1
 
 """train_data, len1 = get_loader(data = 'CoMic', data_dir = 'Binary/processed_data', mode = 'train', task = 'Binary', batch_size = batch_size, 
                                                           seq_l = 768, words = True, shuffle = True)
