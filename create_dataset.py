@@ -72,10 +72,15 @@ class CoMic:
             sys.path.append(str(path_dir))
         
         DATA_PATH = str(path_dir)
-        #try:
-        train_set = json.load(open(f'{DATA_PATH}/training_features_binary_allCaps.json'))
-        validation_set = json.load(open(f'{DATA_PATH}/val_features_binary_allCaps.json'))
-        test_set = json.load(open(f'{DATA_PATH}/test_features_binary_allCaps.json'))
+
+        if task.lower() == 'binary':
+            tsk = 'Binary'
+        else:
+            tsk = 'Multi-Task'
+
+        train_set = json.load(open(f'{DATA_PATH}/{tsk}/training_features_binary_allCaps.json'))
+        validation_set = json.load(open(f'{DATA_PATH}/{tsk}/val_features_binary_allCaps.json'))
+        test_set = json.load(open(f'{DATA_PATH}/{tsk}/test_features_binary_allCaps.json'))
 
         self.train = train = []
         self.dev = dev = []
@@ -86,11 +91,11 @@ class CoMic:
 
             mid = train_set[tr]['IMDBid']
 
-            image = np.load('Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
-                audio = np.load('Features/vgg_vecs/' + mid + '_vggish.npy')
+                audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
             mask_aud = mask_vector(63, audio)
@@ -119,11 +124,11 @@ class CoMic:
 
             mid = validation_set[val]['IMDBid']
 
-            image = np.load('Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
-                audio = np.load('Features/vgg_vecs/' + mid + '_vggish.npy')
+                audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
             mask_aud = mask_vector(63, audio)
@@ -152,11 +157,11 @@ class CoMic:
 
             mid = test_set[ts]['IMDBid']
 
-            image = np.load('Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
-                audio = np.load('Features/vgg_vecs/' + mid + '_vggish.npy')
+                audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
             mask_aud = mask_vector(63, audio)
