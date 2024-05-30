@@ -91,7 +91,7 @@ class CoMic:
 
             mid = train_set[tr]['IMDBid']
 
-            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
@@ -124,7 +124,7 @@ class CoMic:
 
             mid = validation_set[val]['IMDBid']
 
-            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
@@ -157,7 +157,7 @@ class CoMic:
 
             mid = test_set[ts]['IMDBid']
 
-            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load('Features/i3D_vecs/' + mid + "_flow.npy")
+            image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
             mask_img = mask_vector(36, image)
 
             try:
