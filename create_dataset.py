@@ -3,7 +3,7 @@ import json
 import pickle
 import numpy as np
 import nltk
-#nltk.download('punkt')
+nltk.download('punkt')
 
 from nltk import word_tokenize
 from tqdm import tqdm
@@ -232,10 +232,6 @@ class Hate:
 
         train_aux, test_split, y_train_aux, y_test = train_test_split(list(data.keys()), list(data.values()), test_size = 0.1)
         train_split, val_split, y_train, y_val = train_test_split(train_aux, y_train_aux, test_size = 0.1)
-        print(len(train_split))
-        print(len(val_split))
-        print(len(test_split))
-        print(len(data))
 
         self.train = train = []
         self.dev = dev = []
