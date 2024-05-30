@@ -3,7 +3,7 @@ import json
 import pickle
 import numpy as np
 import nltk
-nltk.download('punkt')
+#nltk.download('punkt')
 
 from nltk import word_tokenize
 from tqdm import tqdm
@@ -75,12 +75,14 @@ class CoMic:
 
         if task.lower() == 'binary':
             tsk = 'Binary'
+            train_set = json.load(open(f'{DATA_PATH}/{tsk}/training_features_binary_allCaps.json'))
+            validation_set = json.load(open(f'{DATA_PATH}/{tsk}/val_features_binary_allCaps.json'))
+            test_set = json.load(open(f'{DATA_PATH}/{tsk}/test_features_binary_allCaps.json'))
         else:
             tsk = 'Multi-Task'
-
-        train_set = json.load(open(f'{DATA_PATH}/{tsk}/training_features_binary_allCaps.json'))
-        validation_set = json.load(open(f'{DATA_PATH}/{tsk}/val_features_binary_allCaps.json'))
-        test_set = json.load(open(f'{DATA_PATH}/{tsk}/test_features_binary_allCaps.json'))
+            train_set = json.load(open(f'{DATA_PATH}/{tsk}/training_features_multi_task_2.json'))
+            validation_set = json.load(open(f'{DATA_PATH}/{tsk}/val_features_multi_task_2.json'))
+            test_set = json.load(open(f'{DATA_PATH}/{tsk}/test_features_multi_task_2.json'))
 
         self.train = train = []
         self.dev = dev = []
@@ -98,9 +100,12 @@ class CoMic:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(63, audio)
+            mask_aud = mask_vector(67, audio)
             
-            label = train_set[tr]['y']
+            if task.lower() == 'binary':
+                label = np.array(train_set[tr]['y'])
+            else:
+                label = np.array([train_set[tr]['mature'], train_set[tr]['gory'], train_set[tr]['slapstick'], train_set[tr]['sarcasm']])
 
             if words:
                 _words = train_set[tr]['words']
@@ -114,11 +119,11 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                train.append(((__words, image, mask_img, audio, mask_aud, actual_words), label, None))
+                train.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
             else:
                 __words = train_set[tr]['indexes']
 
-                train.append(((__words, image, mask_img, audio, mask_aud, __words), label, None))
+                train.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
 
         for val in validation_set:
 
@@ -131,9 +136,13 @@ class CoMic:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(63, audio)
+            mask_aud = mask_vector(67, audio)
             
-            label = validation_set[val]['y']
+            if task.lower() == 'binary':
+                label = np.array(train_set[tr]['y'])
+            else:
+                label = np.array([validation_set[val]['mature'], validation_set[val]['gory'], 
+                                  validation_set[val]['slapstick'], validation_set[val]['sarcasm']])
 
             if words:
                 _words = validation_set[val]['words']
@@ -147,11 +156,11 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                dev.append(((__words, image, mask_img, audio, mask_aud, actual_words), label, None))
+                dev.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
             else:
                 __words = validation_set[val]['indexes']
 
-                dev.append(((__words, image, mask_img, audio, mask_aud, __words), label, None))
+                dev.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
 
         for ts in test_set:
 
@@ -164,10 +173,12 @@ class CoMic:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(63, audio)
+            mask_aud = mask_vector(67, audio)
             
-            label = np.array(test_set[ts]['y'])
-            #label = np.nan_to_num(label)
+            if task.lower() == 'binary':
+                label = np.array(train_set[tr]['y'])
+            else:
+                label = np.array([test_set[ts]['mature'], test_set[ts]['gory'], test_set[ts]['slapstick'], test_set[ts]['sarcasm']])
 
             if words:
                 _words = test_set[ts]['words']
@@ -181,12 +192,12 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                test.append(((__words, image, mask_img, audio, mask_aud, actual_words), label, None))
+                test.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
             else:
                 __words = test_set[ts]['indexes']
                 __words = np.asarray(__words)
 
-                test.append(((__words, image, mask_img, audio, mask_aud, __words), label, None))
+                test.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
 
         word2id.default_factory = return_unk
 
@@ -260,11 +271,11 @@ class Hate:
             __words = np.asarray(words_)
 
             if dat in train_split:
-                train.append(((__words, img, mask_img, aud, mask_aud, actual_words), label, None))
+                train.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
             elif dat in val_split:
-                dev.append(((__words, img, mask_img, aud, mask_aud, actual_words), label, None))
+                dev.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
             elif dat in test_split:
-                test.append(((__words, img, mask_img, aud, mask_aud, actual_words), label, None))
+                test.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
 
         word2id.default_factory = return_unk
 
