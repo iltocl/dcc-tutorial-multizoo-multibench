@@ -12,6 +12,7 @@ This tutorial is aimed to provide a general description of the multizoo and mult
   - [Summary](#summary)
   - [Getting Started](#getting-started)
       - [Code Structure](#code-structure)
+      - [Example of MultiBench usage](https://colab.research.google.com/github/iltocl/dcc-tutorial-multizoo-multibench/blob/main/Examples/Multibench_Example_Usage_Colab.ipynb)
   - [Media Coverage](#media-coverage)
 
 # Summary
