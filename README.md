@@ -3,7 +3,7 @@ Go to this [drive folder](https://drive.google.com/drive/folders/1RrPJuVRm8kxqPe
 
 ![Alt text](img.png)
 
-Once you have completed the previous step, you can run the tutorial: [Example of usage for Comic Mischief and Hate Speech datasets](https://colab.research.google.com/github/iltocl/dcc-tutorial-multizoo-multibench/blob/main/comic_hate_example.ipynb)
+Once you have completed the previous step, you can run the tutorial: [Example of usage for Comic Mischief and Hate Speech datasets](https://colab.research.google.com/github/iltocl/dcc-tutorial-multizoo-multibench/blob/main/Examples/comic_hate_example.ipynb)
 
 # dcc-tutorial-multizoo-multibench
 This tutorial is aimed to provide a general description of the multizoo and multibench sources as well as practical examples of how to use it 
