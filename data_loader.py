@@ -109,7 +109,7 @@ def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, m
         # get the data out of the batch - use pad sequence util functions from PyTorch to pad things
         #labels = torch.cat([torch.from_numpy(sample[1]) for sample in batch], dim=0)
         #labels = torch.from_numpy(batch[0][1])
-        labels = np.array([sample[0][6] for sample in batch])
+        labels = np.array([sample[0][4] for sample in batch])
         if task.lower() == 'binary':
             labels = torch.tensor(labels)
         else:
@@ -121,9 +121,7 @@ def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, m
             sentences = pad_sequence([torch.LongTensor(sample[0][0]) for sample in batch])"""
         sentences = pad_sequence([torch.LongTensor(sample[0][0]) for sample in batch], padding_value=PAD).permute(1, 0)
         visual = pad_sequence([torch.FloatTensor(sample[0][1]) for sample in batch]).permute(1, 0, 2)
-        acoustic = pad_sequence([torch.FloatTensor(sample[0][3]) for sample in batch]).permute(1, 0, 2)
-        mask_audio = pad_sequence([torch.FloatTensor(sample[0][4]) for sample in batch]).permute(1, 0)
-        mask_image = pad_sequence([torch.FloatTensor(sample[0][2]) for sample in batch]).permute(1, 0)
+        acoustic = pad_sequence([torch.FloatTensor(sample[0][2]) for sample in batch]).permute(1, 0, 2)
 
         ## BERT-based features input prep
 
@@ -133,15 +131,15 @@ def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, m
         for sample in batch:
             if data.lower() == 'comic':
                 if words:
-                    text = " ".join(sample[0][5])
+                    text = " ".join(sample[0][3])
                     encoded_bert_sent = bert_tokenizer.encode_plus(text, max_length = SENT_LEN + 2, add_special_tokens = True,
                                                                    padding = 'max_length', truncation = True)
                     bert_details.append(encoded_bert_sent)
                 else:
-                    bert_details.append(sample[0][5])
+                    bert_details.append(sample[0][3])
             else:
                 #print('sent', len(sample[0][3]))
-                text = " ".join(sample[0][5])
+                text = " ".join(sample[0][3])
                 encoded_bert_sent = bert_tokenizer_es.encode_plus(
                     text, max_length=SENT_LEN+2, add_special_tokens=True, padding='max_length', truncation = True)
                 bert_details.append(encoded_bert_sent)
@@ -171,14 +169,9 @@ def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, m
         audio = torch.nan_to_num(dataset.mlp_audio(audio_encoded), nan = 0.5)
         image = torch.nan_to_num(dataset.mlp_img(img_encoded), nan = 0.5)"""
 
-        modals = [visual, acoustic, hidden[-1]]
-        for i in range(len(modals)):
-            modals[i] = modals[i][:max_pad]
-            modals[i] = F.pad(modals[i], (0, 0, 0, max_pad - modals[i].shape[0]))
-
-        txt = modals[2]
-        audio = modals[1]
-        image = modals[0]
+        txt = torch.cat([F.pad(sample, (0, 0, 0, max_pad - sample.shape[0])).unsqueeze(0) for sample in hidden[-1]], dim = 0)
+        audio = torch.cat([F.pad(sample, (0, 0, 0, max_pad - sample.shape[0])).unsqueeze(0) for sample in acoustic], dim = 0)
+        image = torch.cat([F.pad(sample, (0, 0, 0, max_pad - sample.shape[0])).unsqueeze(0) for sample in visual], dim = 0)
 
         #return sentences, visual, acoustic, labels, lengths, bert_sentences, bert_sentence_types, bert_sentence_att_mask, mask_audio, mask_image
         return image, audio, txt, labels

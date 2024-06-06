@@ -94,13 +94,11 @@ class CoMic:
             mid = train_set[tr]['IMDBid']
 
             image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
-            mask_img = mask_vector(36, image)
 
             try:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(67, audio)
             
             if task.lower() == 'binary':
                 label = np.array(train_set[tr]['y'])
@@ -119,24 +117,22 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                train.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
+                train.append(((__words, image, audio, actual_words, label), label, None))
             else:
                 __words = train_set[tr]['indexes']
 
-                train.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
+                train.append(((__words, image, audio, __words, label), label, None))
 
         for val in validation_set:
 
             mid = validation_set[val]['IMDBid']
 
             image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
-            mask_img = mask_vector(36, image)
 
             try:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(67, audio)
             
             if task.lower() == 'binary':
                 label = np.array(train_set[tr]['y'])
@@ -156,24 +152,22 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                dev.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
+                dev.append(((__words, image, audio, actual_words, label), label, None))
             else:
                 __words = validation_set[val]['indexes']
 
-                dev.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
+                dev.append(((__words, image, audio, __words, label), label, None))
 
         for ts in test_set:
 
             mid = test_set[ts]['IMDBid']
 
             image = np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_rgb.npy") + np.load(f'{DATA_PATH}/Features/i3D_vecs/' + mid + "_flow.npy")
-            mask_img = mask_vector(36, image)
 
             try:
                 audio = np.load(f'{DATA_PATH}/Features/vgg_vecs/' + mid + '_vggish.npy')
             except:
                 audio = np.array(128 * [0.0])
-            mask_aud = mask_vector(67, audio)
             
             if task.lower() == 'binary':
                 label = np.array(train_set[tr]['y'])
@@ -192,12 +186,12 @@ class CoMic:
 
                 __words = np.asarray(words_)
 
-                test.append(((__words, image, mask_img, audio, mask_aud, actual_words, label), label, None))
+                test.append(((__words, image, audio, actual_words, label), label, None))
             else:
                 __words = test_set[ts]['indexes']
                 __words = np.asarray(__words)
 
-                test.append(((__words, image, mask_img, audio, mask_aud, __words, label), label, None))
+                test.append(((__words, image, audio, __words, label), label, None))
 
         word2id.default_factory = return_unk
 
@@ -242,12 +236,8 @@ class Hate:
             label = np.array([data[dat]])
             
             img = np.load(f'{path_dir}/features/I3D_vecs/' + dat + "_rgb.npy") + np.load(f'{path_dir}/features/I3D_vecs/' + dat + "_flow.npy")
-            #image.append(img)
-            mask_img = mask_vector(26, img)
 
             aud = np.load(f'{path_dir}/features/vgg_vecs/' + dat + '_vggish.npy')
-            #audio.append(aud)
-            mask_aud = mask_vector(67, aud)
             
             _words = []
             txt = open(f'{path_dir}/features/TextoFiles/{dat}.txt', 'r', encoding = 'utf8')
@@ -267,11 +257,11 @@ class Hate:
             __words = np.asarray(words_)
 
             if dat in train_split:
-                train.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
+                train.append(((__words, img, aud, actual_words, label), label, None))
             elif dat in val_split:
-                dev.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
+                dev.append(((__words, img, aud, actual_words, label), label, None))
             elif dat in test_split:
-                test.append(((__words, img, mask_img, aud, mask_aud, actual_words, label), label, None))
+                test.append(((__words, img, aud, actual_words, label), label, None))
 
         word2id.default_factory = return_unk
 
