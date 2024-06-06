@@ -1,0 +1,16 @@
+# Comic-Mischief-Prediction
+This project is related to the paper Labeling Comic Mischief Content in Online Videos with a Multimodal Hierarchical-Cross-Attention Model. The HICCAP.png shows the overall structure of the proposed HIerarchical Cross Attention with CAPtion (HICCAP) model. Totally we have 3 directories 1) Binary, 2) Multi-Task, and 3) Features. We will discuss the content of directories in the next sections.
+
+## Binary
+This directory contains the binary implementation of our approach. Inside of this directory, we can find two directories 1) source, and 2) processed_data. The source directory contains all the Python files needed to run the model for binary prediction. In the Python file "nlp_comic_fine_tuning_binary.py", we have the training loop for binary classification. The cinfig.py contains all the required configurations for training the model. The "models" directory contains the Python file of the proposed model and also the attention file implemented in this project. The "experiments" directory also contains a couple of helper functions that we utilized in our training process. The processed_data directory contains the json files needed for training, validation, and testing the model. These files contain a dictionary that has the name of all videos with assigned binary labels and also the related description. 
+
+## Multi-Task
+Similar to the "Binary" directory, this directory contains the multi-task implementation of our approach. Inside of this directory, we can find two directories 1) source, and 2) processed_data. The source directory contains all the Python files needed to run the model for multi-task prediction. In the Python file "nlp_comic_multi_task.py", we have the training loop for multi-task classification. The cinfig.py contains all the required configurations for training the model. The "models" directory contains the Python file of the proposed model and also the attention file implemented in this project. The "experiments" directory also contains a couple of helper functions that we utilized in our training process. The processed_data directory contains the json files needed for training, validation, and testing the model. These files contain a dictionary that has the name of all videos with assigned labels for different categories and also the related description. 
+
+## Features
+During the training of the model, we load the i3d and vggish features of input videos and audio respectively. These files have been generated offline and stored in separate directories which will be read during the training and testing process. The "Features" directory has a vgg_vecs.zip file which contains the vggish audio features of input videos. For using these features you should extract this file to the "vgg_vecs" directory and set the address inside of the training loop file. Similarly, the "Features" directory has 8 rar files "i3D_vecs.part01.rar,..." that contain the i3d features of input videos. You should extract all of these rar files in a unique directory named "i3D_vecs" and set its address of it in the training loop file. Note that the process of generating vggish and i3d features is offline and will be done separately. During the training process, we only read those features and used them for the training of the model and prediction.
+
+
+
+
+
