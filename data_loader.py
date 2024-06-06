@@ -2,6 +2,7 @@ import numpy as np
 
 import torch
 from torch import nn
+import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
 from transformers import BertTokenizer, BertModel
@@ -27,7 +28,7 @@ def masking(docs_ints, seq_length = 768):
     return masks
 
 class MSADataset(Dataset):
-    def __init__(self, data, data_dir, mode, task:str, words:bool, seq_length:int = 768):
+    def __init__(self, data, data_dir, mode, task:str, words:bool, max_pad:int = 80):
 
         ## Fetch dataset
         if "comic" == str(data).lower():
@@ -55,7 +56,7 @@ class MSADataset(Dataset):
         #self.acoustic_size = self.data[0][0][2].shape[1]
         self.embedding_size = 300
         hidden_size = 128
-        output_size = seq_length
+        output_size = max_pad
         dp = 0.1
 
         self.word2id = self.word2id
@@ -87,10 +88,10 @@ class MSADataset(Dataset):
 
 
 
-def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, seq_length:int = 768, words:bool = True, shuffle:bool = False):
+def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, max_pad:int = 80, words:bool = True, shuffle:bool = False):
     """Load DataLoader of given DialogDataset"""
 
-    dataset = MSADataset(data, data_dir, mode, task.lower(), words, seq_length)
+    dataset = MSADataset(data, data_dir, mode, task.lower(), words, max_pad)
     
     print(mode)
     data_len = len(dataset)
@@ -159,20 +160,28 @@ def get_loader(data, data_dir, mode, task:str = 'Binary', batch_size:int = 16, s
             bert_sentence_types = torch.LongTensor([sample["token_type_ids"] for sample in bert_details])
             bert_sentence_att_mask = torch.LongTensor([sample["attention_mask"] for sample in bert_details])
 
-
         # lengths are useful later in using RNNs
         lengths = torch.LongTensor([sample[0][0].shape[0] for sample in batch])
 
         hidden, _ = dataset.bert(input_ids = bert_sentences, attention_mask = bert_sentence_att_mask, token_type_ids = bert_sentence_types)[-2:]
-        img_encoded, (hid, ct) = dataset.rnn_img(visual)
-        audio_encoded, (hid_audio, ct_audio) = dataset.rnn_audio(acoustic)
+        """img_encoded, (hid, ct) = dataset.rnn_img(visual)
+        audio_encoded, (hid_audio, ct_audio) = dataset.rnn_audio(acoustic)"""
 
-        txt = torch.nan_to_num(dataset.mlp_text(hidden[-1]), nan = 0.5)
+        """txt = torch.nan_to_num(dataset.mlp_text(hidden[-1]), nan = 0.5)
         audio = torch.nan_to_num(dataset.mlp_audio(audio_encoded), nan = 0.5)
-        image = torch.nan_to_num(dataset.mlp_img(img_encoded), nan = 0.5)
+        image = torch.nan_to_num(dataset.mlp_img(img_encoded), nan = 0.5)"""
+
+        modals = [visual, acoustic, hidden[-1]]
+        for i in range(len(modals)):
+            modals[i] = modals[i][:max_pad]
+            modals[i] = F.pad(modals[i], (0, 0, 0, max_pad - modals[i].shape[0]))
+
+        txt = modals[2]
+        audio = modals[1]
+        image = modals[0]
 
         #return sentences, visual, acoustic, labels, lengths, bert_sentences, bert_sentence_types, bert_sentence_att_mask, mask_audio, mask_image
-        return txt, audio, image, labels
+        return image, audio, txt, labels
 
 
     data_loader = DataLoader(
