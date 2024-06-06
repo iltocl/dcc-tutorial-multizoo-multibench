@@ -19,6 +19,11 @@ To access the ComicMischief and HateSpeech datasets go to this [drive folder](ht
 
 Once you have completed the previous step, you can run the tutorial: [Example of MultiBench usage](https://colab.research.google.com/github/iltocl/dcc-tutorial-multizoo-multibench/blob/main/Examples/Multibench_Example_Usage_Colab.ipynb)
 
+# HICCAP model
+
+We can also use HICCAP model from the original paper ([Labelling Comic Mischief Content in Online Videos with a Multimodal Hierachical Cross-Attention Model](https://aclanthology.org/2024.lrec-main.874.pdf)). 
+The original repository is [here](https://github.com/RiTUAL-UH/Comic-Mischief-Prediction)
+
 
 ## Code Structure
 ```
