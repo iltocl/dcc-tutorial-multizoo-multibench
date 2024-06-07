@@ -45,16 +45,14 @@ MultiZoo toolkit provides a compilation of standard implementations of models. T
 
 ## Code Structure
 ```
-├── Examples
-│   ├── 
-├── HICCAP
-│   ├── 
-├── create_dataset.py
-├── data_loader.py
+├── Examples             # Jupyter notebooks with examples of how to load multibench, ComicMischief and HateSpeech datasets and how to use multizoo toolkit
+   ├── Multibench_Example_Usage_Colab.ipynb
+├── HICCAP               # HICCAP model content for Binary and Multi-Task tasks
+   ├── Binary            # data and source code
+   ├── Multi-Task        # data and source code
+├── create_dataset.py    # process ComicMischief and HateSpeech datasets
+├── data_loader.py       # adapted for the ComicMischief and HateSpeech datasets 
 ├── testing.py
-├── 
-│   ├── 
-│   ├── 
 └── README.md
 ```
 
